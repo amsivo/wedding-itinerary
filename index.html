@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Wedding Weekend · Family Itinerary</title>
+<meta name="description" content="Who's where, and when — the family itinerary for the wedding weekend.">
+<meta property="og:title" content="The Wedding Weekend · Family Itinerary">
+<meta property="og:description" content="Who's where, and when — tap your name to see your own schedule.">
+<meta name="theme-color" content="#22382C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F4ECDA'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='40' text-anchor='middle' fill='%23C8412F'%3E%26%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   EDIT THESE SETTINGS
+   ────────────────────────────────────────────────────────────── */
+const CONFIG = {
+  title:   "The Wedding Weekend",   // shown in red calligraphy
+  kicker:  "A Family Itinerary",
+  place:   "London",
+  firstDay: "2026-09-23",           // first and last day of the trip (YYYY-MM-DD)
+  lastDay:  "2026-09-29",
+  dateline: "",                     // leave blank to build it from firstDay/lastDay
+  apiUrl:  "https://script.google.com/macros/s/AKfycbxh_9DtnVazx2yUN17uVnYblKiGHrReg0xvNRML1dDRpbfgi1YZxGNVPFRIe7aKrc4C/exec",
+  timezone: "Europe/London",
+  refreshSeconds: 60                // how often the page checks for new events
+};
+</script>
+
+<style>
+:root{
+  --table:#22382C; --paper:#F4ECDA; --card:#FAF5EA;
+  --ink:#2B2622; --ink-soft:#675E54; --ink-faint:#9A8F80;
+  --tomato:#C8412F; --tomato-deep:#A5321F; --olive:#6E8237; --mustard:#D9A33A; --sky:#6C98C6;
+  --script:"Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+  --display:"Cormorant Garamond", Cormorant, Garamond, "Times New Roman", serif;
+  --serif:"EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6 Q6 1.5 12 6 T24 6' fill='none' stroke='%23C8412F' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{color-scheme:light;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--table);color:var(--ink);
+  font-family:var(--serif);font-size:18px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  padding:28px 20px 40px;
+}
+body::before{ /* table texture */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.12;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.caps{font-family:var(--serif);font-size:.74rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase}
+
+/* Paper */
+.paper{
+  position:relative;z-index:1;max-width:940px;margin:0 auto;background:var(--paper);
+  box-shadow:0 2px 0 rgba(0,0,0,.08), 0 30px 70px -20px rgba(0,0,0,.55);
+}
+.paper::before{ /* paper tooth */
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+.frame{position:relative;margin:14px;border:20px solid transparent;border-image-slice:20;border-image-width:20px;border-image-repeat:round;padding:0 26px 10px}
+.wave{height:12px;background:var(--wave) repeat-x center;opacity:.85;margin:0 auto;max-width:420px}
+
+.banner{position:relative;z-index:2;max-width:940px;margin:0 auto 12px;background:var(--mustard);color:var(--ink);text-align:center;padding:.5rem 1rem;font-size:.85rem;border-radius:2px}
+
+/* Illustrations */
+.ill{position:absolute;pointer-events:none;overflow:visible}
+.ill-roses{top:-6px;left:-8px;width:180px;height:158px}
+.ill-sprig{top:-4px;right:-6px;width:150px;height:130px}
+.emblem{display:block;width:66px;height:52px;margin:0 auto .8rem}
+.ill-phonebox{bottom:-8px;left:8px;width:50px;height:114px}
+.ill-brolly{bottom:-6px;right:4px;width:96px;height:104px}
+.ill-postbox{width:40px;height:74px;display:block;margin:0 auto .2rem}
+
+/* Hero */
+.hero{position:relative;text-align:center;padding:3rem 1rem 2.6rem}
+.kicker{color:var(--tomato);margin:0}
+h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp(3.4rem, 10.5vw, 6.6rem);line-height:1.05;margin:.35em 0 .3em;letter-spacing:0}
+.dateline{margin:0;color:var(--ink)}
+.dateline .dot{color:var(--tomato);padding:0 .7em}
+.countdown{font-family:var(--display);font-style:italic;font-size:1.3rem;color:var(--olive);margin:.7rem 0 0}
+
+/* Person picker */
+.viewer{text-align:center;padding:2.2rem 0 .5rem}
+.script-head{font-family:var(--script);color:var(--tomato);font-size:2.5rem;line-height:1;margin:0 0 1rem}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;max-width:720px;margin:0 auto}
+.chip{
+  display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;
+  font-family:var(--display);font-style:italic;font-size:1.25rem;font-weight:500;line-height:1;
+  padding:.5rem 1.05rem .58rem;border:1px solid rgba(43,38,34,.3);border-radius:999px;background:transparent;color:var(--ink);
+  transition:background .2s, color .2s, border-color .2s;
+}
+.chip i{width:.48rem;height:.48rem;border-radius:50%;flex:none;background:var(--c)}
+.chip:hover{border-color:var(--c, var(--ink))}
+.chip.on{background:var(--c, var(--ink));border-color:var(--c, var(--ink));color:var(--on, var(--paper))}
+.chip.on i{background:var(--on)}
+.chip:focus-visible,.btn:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--tomato);outline-offset:3px}
+.linkbtn{background:none;border:0;padding:0;cursor:pointer;color:var(--tomato);border-bottom:1px solid currentColor}
+.linkbtn:hover{color:var(--ink)}
+.viewer .linkbtn{margin-top:1rem}
+
+.summary-row{text-align:center;padding:1.4rem 0 .6rem}
+.summary{margin:0 0 1rem;font-family:var(--display);font-style:italic;font-size:1.4rem;color:var(--ink-soft)}
+.summary em{color:var(--d, var(--ink));font-weight:500}
+.btn{
+  font-family:var(--serif);font-size:.76rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--tomato);color:var(--paper);border:0;border-radius:999px;padding:.95rem 1.6rem;cursor:pointer;
+  box-shadow:inset 0 0 0 3px var(--tomato), inset 0 0 0 4px rgba(244,236,218,.75);transition:background .2s, box-shadow .2s;
+}
+.btn:hover{background:var(--tomato-deep);box-shadow:inset 0 0 0 3px var(--tomato-deep), inset 0 0 0 4px rgba(244,236,218,.75)}
+.btn[disabled]{opacity:.6;cursor:progress}
+
+/* Days */
+.day{padding:2.6rem 0 .6rem}
+.day-head{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.5rem;text-align:left}
+.day-orn{width:70px;height:78px;flex:none}
+.day-name{font-family:var(--script);font-size:3.6rem;line-height:1;color:var(--c)}
+.day-date{color:var(--ink-soft);margin-top:.2rem}
+.day:nth-child(even) .day-head{flex-direction:row-reverse;text-align:right}
+
+.events{list-style:none;margin:0 auto;padding:0;display:grid;gap:1rem;max-width:640px}
+.event{
+  position:relative;background:var(--card);text-align:center;
+  border:20px solid transparent;border-image-slice:20;border-image-width:20px;border-image-repeat:round;
+  padding:.5rem 1.4rem .6rem;scroll-margin-top:2rem;
+  box-shadow:0 1px 0 rgba(43,38,34,.06), 0 12px 24px -18px rgba(43,38,34,.45);
+}
+.next{font-family:var(--script);color:var(--tomato);font-size:1.7rem;line-height:1;margin:0 0 .15rem}
+.time{color:var(--d);margin:0}
+.event h3{font-family:var(--serif);font-weight:500;font-size:1.3rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.25;margin:.35rem 0 .1rem}
+.event h3 .emo{letter-spacing:0;margin-right:.35em}
+.place{font-family:var(--display);font-style:italic;font-size:1.25rem;margin:0}
+.place a{text-decoration:none;border-bottom:1px solid rgba(43,38,34,.25)}
+.place a:hover{border-color:var(--ink)}
+.dress{font-family:var(--display);font-style:italic;font-size:1.1rem;color:var(--ink-soft);margin:.1rem 0 0}
+.notes{margin:.5rem auto 0;max-width:34em}
+.who{font-family:var(--display);font-style:italic;font-size:1.12rem;color:var(--ink-soft);margin:.6rem 0 0}
+.who b{font-weight:500;color:var(--d)}
+.who b.me{text-decoration:underline wavy;text-decoration-thickness:1px;text-underline-offset:4px}
+.cal{display:inline-block;margin-top:.6rem;color:var(--tomato);text-decoration:none;border-bottom:1px solid transparent}
+.cal:hover{border-color:currentColor}
+.event.flash{animation:flash 2.4s ease}
+@keyframes flash{0%,30%{background:#F9E3D6}100%{background:var(--card)}}
+
+.empty,.loading{text-align:center;padding:3.5rem 1rem;font-family:var(--display);font-size:1.5rem;font-style:italic;color:var(--ink-soft)}
+.error{color:var(--tomato-deep)}
+
+/* Footer */
+.colophon{text-align:center;padding:2.4rem 0 1.4rem}
+.colophon .script-head{font-size:2.6rem;margin:.2rem 0 .5rem}
+.colophon .caps{color:var(--ink-faint)}
+
+.fab{display:none}
+
+/* Dialog */
+dialog{border:0;padding:0;background:var(--paper);color:var(--ink);width:min(40rem, calc(100% - 24px));max-height:calc(100dvh - 24px);box-shadow:0 30px 90px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(34,56,44,.7)}
+.sheet{margin:10px;border:20px solid transparent;border-image-slice:20;border-image-width:20px;border-image-repeat:round;padding:.4rem 1.4rem 1.2rem}
+.sheet-head{position:relative;text-align:center;padding-bottom:.4rem;margin-bottom:1rem}
+.sheet-head h2{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:2.6rem;line-height:1.1;margin:0 0 .5rem}
+.close{position:absolute;right:-.5rem;top:-.4rem;background:none;border:0;font-size:1.8rem;line-height:1;cursor:pointer;color:var(--ink-soft);padding:.1rem .3rem}
+.close:hover{color:var(--tomato)}
+.field{display:block;margin-bottom:1.05rem}
+.field > span{display:block;color:var(--ink-soft);margin-bottom:.1rem}
+.field input,.field textarea{
+  width:100%;border:0;border-bottom:1px solid rgba(43,38,34,.3);background:transparent;border-radius:0;
+  font-family:var(--serif);font-size:1.12rem;color:var(--ink);padding:.4rem 0;outline:none;
+}
+.field textarea{resize:vertical;min-height:2.6rem}
+.field ::placeholder{color:var(--ink-faint);opacity:.8;font-style:italic}
+.field input:focus,.field textarea:focus{border-color:var(--tomato)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 1.25rem}
+.row3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:0 1.25rem}
+fieldset{border:0;margin:0 0 1.05rem;padding:0}
+legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
+.picks{display:flex;flex-wrap:wrap;gap:.4rem}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick span{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;font-family:var(--display);font-style:italic;font-size:1.12rem;font-weight:500;padding:.34rem .85rem .4rem;border:1px solid rgba(43,38,34,.3);border-radius:999px}
+.pick span::before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:var(--c, var(--tomato))}
+.pick input:checked + span{background:var(--c, var(--ink));border-color:var(--c, var(--ink));color:var(--on, var(--paper))}
+.pick input:checked + span::before{background:var(--on, var(--paper))}
+.pick input:focus-visible + span{outline:2px solid var(--tomato);outline-offset:2px}
+.form-error{color:var(--tomato-deep);font-style:italic;margin:0 0 1rem}
+.sheet-foot{display:flex;justify-content:flex-end;align-items:center;gap:1.25rem;margin-top:.5rem}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:50;
+  background:var(--table);color:var(--paper);padding:.8rem 1.25rem;border-radius:999px;max-width:calc(100% - 32px);
+  font-family:var(--display);font-style:italic;font-size:1.05rem;transition:all .3s;word-break:break-word;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+
+@media (max-width:760px){
+  .ill-phonebox,.ill-brolly{display:none}
+  .ill-roses{width:118px;height:104px}
+  .ill-sprig{width:100px;height:87px}
+  .day:nth-child(even) .day-head{flex-direction:row;text-align:left}
+}
+@media (max-width:560px){
+  body{font-size:17px;padding:16px 16px 6rem}
+  .frame{margin:8px;padding:0 6px 6px;border-width:16px;border-image-width:16px}
+  .hero{padding:5.2rem .25rem 2rem}
+  .caps{letter-spacing:.18em}
+  .day-orn{width:52px;height:58px}
+  .day-name{font-size:2.9rem}
+  .event{padding:.4rem .5rem .5rem;border-width:16px;border-image-width:16px}
+  .event h3{font-size:1.12rem;letter-spacing:.12em}
+  .summary{font-size:1.25rem}
+  .summary-row .btn{display:none}
+  .fab{display:flex;align-items:center;gap:.5rem;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20}
+  .sheet{margin:6px;padding:.3rem .5rem 1rem;border-width:16px;border-image-width:16px}
+  .row3{grid-template-columns:1fr 1fr}
+  .row3 .field:first-child{grid-column:1 / -1}
+}
+@media print{
+  body{background:#fff;padding:0;font-size:12pt}
+  body::before,.paper::before,.banner,.viewer,.btn,.fab,.cal,.toast{display:none!important}
+  .paper{box-shadow:none}
+  .event{break-inside:avoid;box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Hand-painted illustration set (original artwork, drawn in code) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="paint" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="4" result="warp"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="wob"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".35" numOctaves="2" seed="9" result="grain"/>
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.55 1.12" result="speck"/>
+      <feComposite in="wob" in2="speck" operator="in"/>
+    </filter>
+  </defs>
+
+  <symbol id="m-roses" viewBox="0 0 160 140">
+    <g filter="url(#paint)">
+      <path d="M6 14 C40 26 74 44 110 78" stroke="#5E6E3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M28 24 C36 8 54 4 62 10 C54 24 40 30 28 24Z" fill="#6E8B3D"/>
+      <path d="M50 36 C66 22 86 24 92 32 C80 44 62 46 50 36Z" fill="#58762F"/>
+      <path d="M20 22 C12 38 16 54 24 58 C30 46 28 32 20 22Z" fill="#83A04C"/>
+      <path d="M96 70 C110 62 126 68 128 76 C114 84 102 80 96 70Z" fill="#6E8B3D"/>
+      <path d="M38 70 C36 60 46 56 50 64 C52 70 46 76 38 70Z" fill="#D9536B"/>
+      <path d="M34 72 C38 66 42 64 46 60" stroke="#6E8B3D" stroke-width="2" fill="none"/>
+      <circle cx="74" cy="60" r="20" fill="#D9536B"/>
+      <path d="M72 57 a5 5 0 1 1 4 6 a9 9 0 1 1 6 -12 a14 14 0 1 1 -18 10" stroke="#F3A3B3" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M58 66 C64 76 84 78 90 68" stroke="#B93A55" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+      <path d="M110 78 C112 86 114 90 116 96" stroke="#5E6E3A" stroke-width="2.5" fill="none"/>
+      <circle cx="116" cy="100" r="15" fill="#E8798E"/>
+      <path d="M114 98 a4 4 0 1 1 3 5 a7 7 0 1 1 5 -9 a11 11 0 1 1 -14 8" stroke="#FBC2CD" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-sprig" viewBox="0 0 140 120">
+    <g filter="url(#paint)">
+      <path d="M134 10 C104 28 72 50 18 108" stroke="#5E6E3A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M114 22 C120 7 132 1 139 3 C135 15 126 23 114 22Z" fill="#7FA05A"/>
+      <path d="M106 29 C94 17 77 15 70 19 C78 30 93 34 106 29Z" fill="#58762F"/>
+      <path d="M86 45 C94 29 109 25 116 27 C110 40 98 46 86 45Z" fill="#83A04C"/>
+      <path d="M70 57 C58 47 42 47 35 51 C44 62 58 64 70 57Z" fill="#6E8B3D"/>
+      <path d="M53 75 C61 61 75 57 82 59 C76 71 65 77 53 75Z" fill="#7FA05A"/>
+      <path d="M37 90 C25 84 13 86 6 90 C17 99 29 99 37 90Z" fill="#58762F"/>
+      <circle cx="62" cy="38" r="7" fill="#D9536B"/><circle cx="55" cy="33" r="5.5" fill="#E8798E"/>
+      <circle cx="46" cy="70" r="6.5" fill="#D9536B"/><circle cx="41" cy="64" r="5" fill="#E8798E"/>
+      <circle cx="93" cy="60" r="6" fill="#E8798E"/>
+      <circle cx="59" cy="35" r="2" fill="#fff" opacity=".4"/><circle cx="44" cy="67" r="2" fill="#fff" opacity=".4"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-crown" viewBox="0 0 100 80">
+    <g filter="url(#paint)">
+      <path d="M12 62 L8 26 L30 44 L50 14 L70 44 L92 26 L88 62 Z" fill="#E1B54A"/>
+      <path d="M12 62 L88 62 L86 73 L14 73 Z" fill="#C9962B"/>
+      <path d="M40 52 C45 42 55 42 60 52" stroke="#F3D48A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="8" cy="24" r="4" fill="#D9536B"/><circle cx="50" cy="12" r="4.5" fill="#D9536B"/><circle cx="92" cy="24" r="4" fill="#D9536B"/>
+      <circle cx="30" cy="67" r="3" fill="#4F7FB5"/><circle cx="50" cy="67" r="3" fill="#D9536B"/><circle cx="70" cy="67" r="3" fill="#4F7FB5"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-phonebox" viewBox="0 0 70 160">
+    <g filter="url(#paint)">
+      <path d="M12 150 L12 26 Q35 6 58 26 L58 150 Z" fill="#C8412F"/>
+      <rect x="8" y="150" width="54" height="6" fill="#8E2A1D"/>
+      <rect x="17" y="27" width="36" height="11" fill="#8E2A1D" opacity=".6"/>
+      <rect x="19" y="44" width="32" height="70" fill="#F4ECDA" opacity=".85"/>
+      <path d="M35 44 V114 M19 58 H51 M19 72 H51 M19 86 H51 M19 100 H51" stroke="#C8412F" stroke-width="2"/>
+      <rect x="19" y="120" width="32" height="24" fill="#A5321F"/>
+      <path d="M28 18 Q35 12 42 18" stroke="#8E2A1D" stroke-width="2" fill="none"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-brolly" viewBox="0 0 120 130">
+    <g filter="url(#paint)">
+      <path d="M4 56 Q60 -10 116 56 Z" fill="#2F4A6B"/>
+      <path d="M60 8 L20 56 M60 8 L60 56 M60 8 L100 56" stroke="#4A6A90" stroke-width="2"/>
+      <path d="M4 56 A9.33 9.33 0 0 1 22.67 56 A9.33 9.33 0 0 1 41.33 56 A9.33 9.33 0 0 1 60 56 A9.33 9.33 0 0 1 78.67 56 A9.33 9.33 0 0 1 97.33 56 A9.33 9.33 0 0 1 116 56 L4 56Z" fill="#2F4A6B"/>
+      <path d="M60 56 L60 112" stroke="#8A6D4A" stroke-width="3"/>
+      <path d="M60 112 Q60 126 48 126 Q38 126 38 116" stroke="#8A6D4A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="60" cy="6" r="3" fill="#8A6D4A"/>
+      <path d="M14 78 q3 -5 0 -9 q-3 4 0 9Z M104 84 q3 -5 0 -9 q-3 4 0 9Z M24 100 q3 -5 0 -9 q-3 4 0 9Z M94 108 q3 -5 0 -9 q-3 4 0 9Z" fill="#6C98C6" opacity=".8"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-teacup" viewBox="0 0 110 90">
+    <g filter="url(#paint)">
+      <ellipse cx="50" cy="74" rx="40" ry="5" fill="#F7F1E6" stroke="#A99A86" stroke-width="2"/>
+      <path d="M18 34 C20 58 30 70 50 70 C70 70 80 58 82 34 Z" fill="#F7F1E6" stroke="#A99A86" stroke-width="2"/>
+      <path d="M82 40 C98 40 98 60 80 62" stroke="#A99A86" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="50" cy="34" rx="32" ry="6" fill="#C98E55" stroke="#A99A86" stroke-width="2"/>
+      <circle cx="38" cy="52" r="3.5" fill="#D9536B"/><circle cx="58" cy="58" r="3" fill="#4F7FB5"/><circle cx="50" cy="48" r="2.5" fill="#D9536B"/>
+      <path d="M32 54 c2 -2 4 -2 6 0 M56 60 c2 -2 4 -2 6 0" stroke="#7FA05A" stroke-width="1.5" fill="none"/>
+      <path d="M42 24 C38 16 46 12 42 4 M56 24 C52 16 60 12 56 4" stroke="#A99A86" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".7"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-bus" viewBox="0 0 130 100">
+    <g filter="url(#paint)">
+      <rect x="16" y="4" width="46" height="9" rx="2" fill="#2B2622"/>
+      <rect x="8" y="10" width="114" height="72" rx="10" fill="#C8412F"/>
+      <rect x="16" y="18" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="38" y="18" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="60" y="18" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="82" y="18" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="104" y="18" width="12" height="16" rx="2" fill="#F4ECDA"/>
+      <rect x="8" y="40" width="114" height="4" fill="#8E2A1D"/>
+      <rect x="16" y="50" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="38" y="50" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="62" y="50" width="14" height="28" rx="2" fill="#F4ECDA"/><rect x="82" y="50" width="18" height="16" rx="2" fill="#F4ECDA"/><rect x="104" y="50" width="12" height="16" rx="2" fill="#F4ECDA"/>
+      <circle cx="34" cy="84" r="9" fill="#2B2622"/><circle cx="96" cy="84" r="9" fill="#2B2622"/>
+      <circle cx="34" cy="84" r="3.5" fill="#A99A86"/><circle cx="96" cy="84" r="3.5" fill="#A99A86"/>
+      <rect x="112" y="72" width="8" height="5" rx="1" fill="#F3D48A"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-scones" viewBox="0 0 110 100">
+    <g filter="url(#paint)">
+      <ellipse cx="55" cy="90" rx="24" ry="4" fill="#A99A86"/>
+      <path d="M55 90 V18" stroke="#A99A86" stroke-width="2.5"/>
+      <ellipse cx="55" cy="72" rx="44" ry="5" fill="#F7F1E6" stroke="#A99A86" stroke-width="2"/>
+      <ellipse cx="30" cy="66" rx="9" ry="6" fill="#E3B877"/><path d="M22 64 C26 60 34 60 38 64" stroke="#C99A55" stroke-width="2" fill="none"/>
+      <circle cx="55" cy="66" r="7" fill="#E9C48A"/><circle cx="55" cy="64" r="3.5" fill="#D9536B"/>
+      <rect x="70" y="60" width="16" height="8" rx="4" fill="#E8A5B8"/><rect x="70" y="63" width="16" height="2" fill="#F7F1E6"/>
+      <ellipse cx="55" cy="40" rx="30" ry="4.5" fill="#F7F1E6" stroke="#A99A86" stroke-width="2"/>
+      <path d="M42 38 L55 26 L68 38 Z" fill="#F0DDA8"/><path d="M46 38 L55 30 L64 38 Z" fill="#7FA05A"/>
+      <circle cx="55" cy="23" r="3" fill="#C8412F"/>
+      <circle cx="55" cy="15" r="3" fill="#A99A86"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-cab" viewBox="0 0 130 90">
+    <g filter="url(#paint)">
+      <path d="M10 62 L14 44 Q18 38 30 36 L42 18 Q46 12 56 12 L86 12 Q96 12 100 18 L108 36 Q120 38 122 46 L124 62 Z" fill="#2B2622"/>
+      <path d="M46 20 L58 20 L58 36 L38 36 Z M64 20 L88 20 L96 36 L64 36 Z" fill="#DCE6EE"/>
+      <rect x="8" y="60" width="118" height="8" rx="3" fill="#2B2622"/>
+      <circle cx="36" cy="70" r="9" fill="#2B2622"/><circle cx="96" cy="70" r="9" fill="#2B2622"/>
+      <circle cx="36" cy="70" r="3.5" fill="#A99A86"/><circle cx="96" cy="70" r="3.5" fill="#A99A86"/>
+      <rect x="52" y="4" width="26" height="8" rx="3" fill="#E1B54A"/>
+      <rect x="12" y="50" width="8" height="5" rx="1" fill="#F3D48A"/><rect x="112" y="50" width="8" height="5" rx="1" fill="#C8412F"/>
+    </g>
+  </symbol>
+
+  <symbol id="m-postbox" viewBox="0 0 70 130">
+    <g filter="url(#paint)">
+      <path d="M14 118 L14 30 Q35 6 56 30 L56 118 Z" fill="#C8412F"/>
+      <rect x="8" y="118" width="54" height="8" fill="#2B2622"/>
+      <path d="M12 36 H58" stroke="#8E2A1D" stroke-width="3"/>
+      <rect x="20" y="44" width="30" height="5" rx="2" fill="#2B2622"/>
+      <rect x="18" y="60" width="34" height="30" fill="#F4ECDA" opacity=".85"/>
+      <path d="M22 68 H48 M22 76 H48 M22 84 H40" stroke="#C8412F" stroke-width="1.5"/>
+      <path d="M28 22 Q35 16 42 22" stroke="#8E2A1D" stroke-width="2" fill="none"/>
+      <circle cx="35" cy="13" r="3" fill="#2B2622"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="banner" id="banner" hidden>Preview · showing sample events. Add your Google Sheet link in the settings to go live.</div>
+
+<div class="paper">
+  <div class="frame" data-frame="#C8412F">
+
+    <header class="hero">
+      <svg class="ill ill-roses" aria-hidden="true"><use href="#m-roses" width="100%" height="100%"/></svg>
+      <svg class="ill ill-sprig" aria-hidden="true"><use href="#m-sprig" width="100%" height="100%"/></svg>
+      <svg class="ill ill-phonebox" aria-hidden="true"><use href="#m-phonebox" width="100%" height="100%"/></svg>
+      <svg class="ill ill-brolly" aria-hidden="true"><use href="#m-brolly" width="100%" height="100%"/></svg>
+      <svg class="emblem" aria-hidden="true"><use href="#m-crown" width="100%" height="100%"/></svg>
+      <p class="caps kicker" id="kicker"></p>
+      <h1 id="title"></h1>
+      <p class="caps dateline" id="dateline"></p>
+      <p class="countdown" id="countText">&nbsp;</p>
+    </header>
+
+    <div class="wave"></div>
+
+    <nav class="viewer" aria-label="Choose whose itinerary to view">
+      <p class="script-head">Whose itinerary?</p>
+      <div class="chips" id="chips"></div>
+      <button class="linkbtn caps" id="copyLink" type="button">Copy link</button>
+    </nav>
+
+    <div class="summary-row">
+      <p class="summary" id="summary" aria-live="polite"></p>
+      <button class="btn" type="button" data-open-add>Add an event</button>
+    </div>
+
+    <main id="days"></main>
+
+    <footer class="colophon">
+      <div class="wave" style="margin-bottom:1.6rem"></div>
+      <svg class="ill-postbox" aria-hidden="true"><use href="#m-postbox" width="100%" height="100%"/></svg>
+      <p class="script-head">with love</p>
+      <p class="caps" id="updated"></p>
+    </footer>
+
+  </div>
+</div>
+
+<button class="btn fab" type="button" data-open-add aria-label="Add an event"><span style="font-size:1.1rem;line-height:1">+</span> Add</button>
+
+<dialog id="addDialog" aria-labelledby="addTitle">
+  <form class="sheet" id="addForm" data-frame="#C8412F" novalidate>
+    <div class="sheet-head">
+      <h2 id="addTitle">Add to the itinerary</h2>
+      <button class="close" type="button" id="closeAdd" aria-label="Close">×</button>
+    </div>
+
+    <label class="field"><span class="caps">What's happening</span>
+      <input name="title" required maxlength="120" placeholder="e.g. Afternoon tea" autocomplete="off"></label>
+
+    <div class="row3">
+      <label class="field"><span class="caps">Date</span><input name="date" type="date" required></label>
+      <label class="field"><span class="caps">Starts</span><input name="start" type="time"></label>
+      <label class="field"><span class="caps">Ends</span><input name="end" type="time"></label>
+    </div>
+
+    <div class="row">
+      <label class="field"><span class="caps">Where</span><input name="location" maxlength="120" placeholder="e.g. The hotel bar" autocomplete="off"></label>
+      <label class="field"><span class="caps">Address <i style="text-transform:none;letter-spacing:0">(optional)</i></span><input name="address" maxlength="200" autocomplete="off"></label>
+    </div>
+
+    <fieldset>
+      <legend class="caps">Who's going</legend>
+      <div class="picks" id="picks"></div>
+      <label class="field" style="margin:.6rem 0 0"><input name="others" maxlength="200" placeholder="Someone else? Add names" autocomplete="off"></label>
+    </fieldset>
+
+    <div class="row">
+      <label class="field"><span class="caps">Dress code</span><input name="dress" maxlength="60" placeholder="e.g. Smart casual" autocomplete="off"></label>
+      <label class="field"><span class="caps">Your name</span><input name="addedBy" maxlength="60" autocomplete="name"></label>
+    </div>
+
+    <label class="field"><span class="caps">Notes</span>
+      <textarea name="notes" rows="2" maxlength="600" placeholder="Meet in the lobby ten minutes early"></textarea></label>
+
+    <label class="field" id="passField" hidden><span class="caps">Family passcode</span>
+      <input name="passcode" type="password" autocomplete="off"></label>
+
+    <p class="form-error" id="formError" hidden></p>
+    <div class="sheet-foot">
+      <button class="linkbtn caps" type="button" id="cancelAdd">Cancel</button>
+      <button class="btn" type="submit" id="submitAdd">Add to itinerary</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* Sample events shown only when apiUrl is blank */
+const SAMPLE = {
+  people: ["Alana", "Mom", "Dad", "Grandma", "The Cousins", "Bridal Party"],
+  events: [
+    {date:"2026-09-23", start:"14:00", end:"", title:"Airport pickup", location:"Heathrow, Terminal 5 arrivals", people:"Dad", notes:"Driver will be waiting at arrivals with a sign."},
+    {date:"2026-09-23", start:"19:00", end:"", title:"Pub supper", location:"Near the hotel", people:"Everyone", dress:"Relaxed"},
+    {date:"2026-09-24", start:"19:30", end:"22:00", title:"Welcome drinks", location:"The hotel bar", people:"Everyone", dress:"Smart casual", notes:"Casual hellos before the big weekend. Come whenever you land."},
+    {date:"2026-09-25", start:"10:00", end:"12:00", title:"Morning walk through St James's Park", location:"Meet in the hotel lobby", people:"Alana, The Cousins"},
+    {date:"2026-09-25", start:"15:00", end:"17:00", title:"Afternoon tea", location:"Tea room, to be confirmed", people:"Mom, Grandma, Alana", dress:"Smart", notes:"Reservation is under Mom's name."},
+    {date:"2026-09-25", start:"18:00", end:"19:00", title:"Ceremony rehearsal", location:"The ceremony venue", people:"Bridal Party, Mom, Dad"},
+    {date:"2026-09-25", start:"19:30", end:"22:30", title:"Rehearsal dinner", location:"Private dining room", people:"Mom, Dad, Grandma, Alana, Bridal Party", dress:"Cocktail"},
+    {date:"2026-09-26", start:"09:00", end:"12:00", title:"Hair & makeup", location:"The bridal suite", people:"Bridal Party", notes:"Coffee and pastries provided."},
+    {date:"2026-09-26", start:"12:30", end:"13:15", title:"Family portraits", location:"The hotel garden", people:"Mom, Dad, Grandma, Alana"},
+    {date:"2026-09-26", start:"14:00", end:"15:00", title:"The ceremony", location:"The ceremony venue", people:"Everyone", dress:"Black tie", notes:"Please be seated by 1:45 pm."},
+    {date:"2026-09-26", start:"17:30", end:"00:30", title:"Reception & dinner", location:"The reception venue", people:"Everyone", dress:"Black tie", notes:"Cars back to the hotel from 11:30 pm."},
+    {date:"2026-09-27", start:"11:00", end:"13:00", title:"Farewell brunch", location:"The hotel restaurant", people:"Everyone", dress:"Relaxed"},
+    {date:"2026-09-28", start:"10:30", end:"13:00", title:"Tower of London", location:"Meet at the main entrance", people:"Alana, The Cousins"},
+    {date:"2026-09-29", start:"09:00", end:"", title:"Train to Edinburgh", location:"King's Cross", people:"Alana, Mom, Dad"}
+  ]
+};
+
+/* ── helpers ── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s ?? "").trim().toLowerCase();
+const same = (a, b) => norm(a) === norm(b);
+const isEveryone = p => /^(everyone|everybody|all)$/i.test(String(p).trim());
+const pad = n => String(n).padStart(2, "0");
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const possessive = n => /s$/i.test(n) ? `${n}’` : `${n}’s`;
+const listJoin = a => a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} & ${a[a.length - 1]}`;
+const PALETTE = ["#C8412F","#6E8237","#4F7FB5","#C99326","#C3607A","#2F5540","#C06A40","#7B4F7A"];
+const DAY_COLORS = ["#C8412F","#6E8237","#4F7FB5","#C06A40","#2F5540","#B9862A","#7B4F7A"];
+const DAY_ORNAMENTS = ["m-teacup","m-bus","m-brolly","m-scones","m-phonebox","m-crown","m-cab"];
+const MONTHS = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+const store = {
+  get(k){ try { return localStorage.getItem(k) || ""; } catch(_) { return ""; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch(_) {} }
+};
+
+/* colour maths */
+const hexRgb = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16));
+const rgbHex = a => "#" + a.map(v => pad(Math.round(v).toString(16))).join("");
+const shade = (h, amt) => rgbHex(hexRgb(h).map(v => v * (1 - amt)));
+function onColor(h){
+  const L = hexRgb(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+  const lum = .2126 * L[0] + .7152 * L[1] + .0722 * L[2];
+  return 1.05 / (lum + .05) >= 2.6 ? "#FAF5EA" : "#2B2622";
+}
+const swatch = c => `--c:${c};--d:${shade(c, .2)};--on:${onColor(c)}`;
+
+/* hand-drawn wavy frame, used as a border image */
+const frameCache = {};
+function frameUrl(color){
+  if (frameCache[color]) return frameCache[color];
+  const i = 7, a = 2.1, wave = t => a * Math.sin(t * Math.PI * 2);
+  let d = `M${i} 20 Q${i} ${i} 20 ${i}`;
+  for (let x = 21; x <= 40; x++) d += ` L${x} ${(i - wave((x - 20) / 20)).toFixed(2)}`;
+  d += ` Q${60 - i} ${i} ${60 - i} 20`;
+  for (let y = 21; y <= 40; y++) d += ` L${(60 - i + wave((y - 20) / 20)).toFixed(2)} ${y}`;
+  d += ` Q${60 - i} ${60 - i} 40 ${60 - i}`;
+  for (let x = 39; x >= 20; x--) d += ` L${x} ${(60 - i + wave((40 - x) / 20)).toFixed(2)}`;
+  d += ` Q${i} ${60 - i} ${i} 40`;
+  for (let y = 39; y >= 20; y--) d += ` L${(i - wave((40 - y) / 20)).toFixed(2)} ${y}`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><path d='${d}Z' fill='none' stroke='${color}' stroke-width='1.5' stroke-linejoin='round'/></svg>`;
+  const enc = encodeURIComponent(svg).replace(/'/g, "%27").replace(/\(/g, "%28").replace(/\)/g, "%29");
+  return frameCache[color] = `url(data:image/svg+xml,${enc})`;
+}
+
+function ymd(y, m, d){ return `${y}-${pad(m)}-${pad(d)}`; }
+function addDays(s, n){ const [y,m,d] = s.split("-").map(Number); const t = new Date(Date.UTC(y, m-1, d+n)); return ymd(t.getUTCFullYear(), t.getUTCMonth()+1, t.getUTCDate()); }
+function utcDate(s){ const [y,m,d] = s.split("-").map(Number); return new Date(Date.UTC(y, m-1, d)); }
+
+function normDate(v){
+  const s = String(v ?? "").trim();
+  if (!s) return "";
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return ymd(+m[1], +m[2], +m[3]);
+  const year = new Date().getFullYear();
+  for (const x of s.matchAll(/(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]{3,})\.?,?\s*(\d{4})?/gi)) {
+    const mi = MONTHS.indexOf(x[2].slice(0,3).toLowerCase());
+    if (mi >= 0) return ymd(+(x[3] || year), mi + 1, +x[1]);
+  }
+  for (const x of s.matchAll(/([a-z]{3,})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})?/gi)) {
+    const mi = MONTHS.indexOf(x[1].slice(0,3).toLowerCase());
+    if (mi >= 0) return ymd(+(x[3] || year), mi + 1, +x[2]);
+  }
+  const d = new Date(s);
+  return isNaN(d) ? "" : ymd(d.getFullYear(), d.getMonth()+1, d.getDate());
+}
+
+function parseTime(v){
+  const s = String(v ?? "").trim().toLowerCase().replace(/\s+/g, "").replace(/\./g, (c, i, str) => /\d\.\d/.test(str.slice(Math.max(0, i-1), i+2)) ? ":" : "");
+  if (!s) return null;
+  if (s === "noon") return 720;
+  if (s === "midnight") return 0;
+  const m = s.match(/^(\d{1,2})(?::(\d{2}))?(am|pm|a|p)?$/);
+  if (!m) return null;
+  let h = +m[1]; const min = +(m[2] || 0); const ap = m[3] ? m[3][0] : null;
+  if (min > 59 || h > 24) return null;
+  if (ap) { if (h > 12 || h === 0) return null; if (h === 12) h = 0; if (ap === "p") h += 12; }
+  return (h % 24) * 60 + min;
+}
+function fmtTime(min){
+  const h = Math.floor(min / 60) % 24, m = min % 60, ap = h >= 12 ? "pm" : "am", h12 = h % 12 || 12;
+  return m ? `${h12}:${pad(m)} ${ap}` : `${h12} ${ap}`;
+}
+
+function splitPeople(v){
+  const list = Array.isArray(v) ? v : String(v ?? "").split(/\s*(?:[,;\n]|\s&\s)\s*/);
+  const out = [];
+  list.map(x => String(x).trim()).filter(Boolean).forEach(x => { if (!out.some(o => same(o, x))) out.push(isEveryone(x) ? "Everyone" : x); });
+  return out.length ? out : ["Everyone"];
+}
+
+let uid = 0;
+function normalizeEvent(e){
+  return {
+    id: String(e.id || `e${++uid}`),
+    date: normDate(e.date),
+    startMin: parseTime(e.start),
+    endMin: parseTime(e.end),
+    title: String(e.title ?? "").trim() || "Untitled",
+    location: String(e.location ?? "").trim(),
+    address: String(e.address ?? "").trim(),
+    dress: String(e.dress ?? "").trim(),
+    notes: String(e.notes ?? "").trim(),
+    emoji: String(e.emoji ?? "").trim().slice(0, 8),   // only shown if someone fills in the Sheet's emoji column
+    people: splitPeople(e.people)
+  };
+}
+
+function nowInZone(){
+  const f = new Intl.DateTimeFormat("en-CA", {timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit", hourCycle:"h23"});
+  const p = Object.fromEntries(f.formatToParts(new Date()).map(x => [x.type, x.value]));
+  return { date: `${p.year}-${p.month}-${p.day}`, min: (+p.hour) * 60 + (+p.minute) };
+}
+
+/* ── state ── */
+const state = { live: !!CONFIG.apiUrl, loading: true, error: "", people: [], events: [], selected: "", updatedAt: null };
+
+function allPeople(){
+  const out = [];
+  const add = p => { if (p && !isEveryone(p) && !out.some(o => same(o, p))) out.push(p); };
+  state.people.forEach(add);
+  state.events.forEach(e => e.people.forEach(add));
+  return out;
+}
+function colorFor(name){
+  const i = allPeople().findIndex(p => same(p, name));
+  return PALETTE[(i < 0 ? 0 : i) % PALETTE.length];
+}
+function sortEvents(list){
+  return list.slice().sort((a, b) =>
+    (a.date || "9999").localeCompare(b.date || "9999") ||
+    (a.startMin ?? -1) - (b.startMin ?? -1) ||
+    a.title.localeCompare(b.title));
+}
+function visibleEvents(){
+  const sel = state.selected;
+  return sortEvents(state.events.filter(e => !sel || e.people.some(p => isEveryone(p) || same(p, sel))));
+}
+
+/* ── data ── */
+async function load(){
+  if (!state.live) {
+    if (!state.events.length) { state.people = SAMPLE.people.slice(); state.events = SAMPLE.events.map(normalizeEvent); }
+    state.loading = false; state.updatedAt = new Date(); render(); return;
+  }
+  try {
+    const res = await fetch(`${CONFIG.apiUrl}${CONFIG.apiUrl.includes("?") ? "&" : "?"}t=${Date.now()}`);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "load failed");
+    state.people = (data.people || []).map(p => String(p).trim()).filter(Boolean);
+    state.events = (data.events || []).map(normalizeEvent).filter(e => e.title !== "Untitled" || e.date);
+    state.error = ""; state.updatedAt = new Date();
+  } catch (err) {
+    console.warn("Itinerary load failed:", err);
+    if (!state.events.length) state.error = "We couldn’t reach the itinerary just now. Check your connection and refresh the page.";
+  }
+  state.loading = false;
+  render();
+}
+
+async function saveEvent(ev, passcode){
+  if (!state.live) {
+    const e = normalizeEvent({...ev, id: `new${Date.now()}`});
+    state.events.push(e);
+    return e.id;
+  }
+  const res = await fetch(CONFIG.apiUrl, {
+    method: "POST",
+    headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({action: "add", passcode, event: ev})
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || "save failed");
+  await load();
+  return data.id;
+}
+
+/* ── rendering ── */
+function renderMasthead(){
+  $("#title").textContent = CONFIG.title;
+  $("#kicker").textContent = CONFIG.kicker;
+
+  let dates = [...new Set(state.events.map(e => e.date).filter(Boolean))].sort();
+  if (CONFIG.firstDay && CONFIG.lastDay) dates = [CONFIG.firstDay, CONFIG.lastDay];
+  let line = CONFIG.dateline;
+  if (!line && dates.length) {
+    const a = utcDate(dates[0]), b = utcDate(dates[dates.length - 1]);
+    const month = d => d.toLocaleDateString("en-GB", {month:"long", timeZone:"UTC"});
+    const yB = b.getUTCFullYear();
+    line = dates.length === 1 ? `${a.getUTCDate()} ${month(a)} ${yB}`
+         : month(a) === month(b) ? `${a.getUTCDate()}–${b.getUTCDate()} ${month(b)} ${yB}`
+         : `${a.getUTCDate()} ${month(a)} – ${b.getUTCDate()} ${month(b)} ${yB}`;
+  }
+  $("#dateline").innerHTML = [CONFIG.place, line].filter(Boolean).map(esc).join('<span class="dot">✦</span>');
+
+  let count = "";
+  if (dates.length) {
+    const today = nowInZone().date;
+    const days = Math.round((utcDate(dates[0]) - utcDate(today)) / 864e5);
+    if (days > 1) count = `${days} days to go`;
+    else if (days === 1) count = "Tomorrow!";
+    else if (today <= dates[dates.length - 1]) count = today === dates[0] ? "It’s today!" : "Happening now";
+    else count = "Thank you for coming";
+  }
+  $("#countText").textContent = count || "Save the dates";
+}
+
+function renderChips(){
+  const people = allPeople();
+  if (!state.loading && state.selected && !people.some(p => same(p, state.selected))) state.selected = "";
+  const allOn = !state.selected;
+  $("#chips").innerHTML =
+    `<button type="button" class="chip all${allOn ? " on" : ""}" data-person="" aria-pressed="${allOn}">Full schedule</button>` +
+    people.map(p => {
+      const on = same(p, state.selected);
+      return `<button type="button" class="chip${on ? " on" : ""}" style="${swatch(colorFor(p))}" data-person="${esc(p)}" aria-pressed="${on}"><i></i>${esc(p)}</button>`;
+    }).join("");
+  $("#copyLink").textContent = state.selected ? `Copy ${possessive(state.selected)} link` : "Copy link";
+}
+
+function renderSummary(list){
+  const el = $("#summary");
+  if (state.loading) { el.textContent = "Gathering the schedule…"; return; }
+  if (state.error) { el.textContent = ""; return; }
+  const days = new Set(list.map(e => e.date || "tbc")).size;
+  const counts = `${plural(list.length, "event")} across ${plural(days, "day")}`;
+  el.innerHTML = state.selected
+    ? `<em style="${swatch(colorFor(state.selected))}">${esc(possessive(state.selected))}</em> weekend: ${counts}`
+    : `The full schedule: ${counts}`;
+}
+
+function mapsUrl(e){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address || e.location)}`; }
+
+function calendarUrl(e){
+  if (!e.date) return "";
+  const d = e.date.replace(/-/g, "");
+  let dates;
+  if (e.startMin == null) {
+    dates = `${d}/${addDays(e.date, 1).replace(/-/g, "")}`;
+  } else {
+    const end = e.endMin ?? Math.min(e.startMin + 60, 1439);
+    const endDate = end <= e.startMin ? addDays(e.date, 1) : e.date;
+    const hm = m => `${pad(Math.floor(m / 60))}${pad(m % 60)}00`;
+    dates = `${d}T${hm(e.startMin)}/${endDate.replace(/-/g, "")}T${hm(end)}`;
+  }
+  const details = [e.notes, e.dress && `Dress: ${e.dress}`].filter(Boolean).join("\n");
+  const q = new URLSearchParams({action: "TEMPLATE", text: e.title, dates, ctz: CONFIG.timezone, details, location: e.address || e.location});
+  return `https://calendar.google.com/calendar/render?${q}`;
+}
+
+function eventHtml(e, nextId, dayColor){
+  const time = e.startMin == null ? "All day"
+    : `${fmtTime(e.startMin)}${e.endMin != null && e.endMin !== e.startMin ? ` – ${fmtTime(e.endMin)}` : ""}`;
+  const where = (e.location || e.address) ? `<p class="place"><a href="${mapsUrl(e)}" target="_blank" rel="noopener">${esc(e.location || e.address)}</a></p>` : "";
+  const who = e.people.some(isEveryone)
+    ? `For everyone`
+    : `For ${listJoin(e.people.map(p => `<b class="${same(p, state.selected) ? "me" : ""}" style="${swatch(colorFor(p))}">${esc(p)}</b>`))}`;
+  const cal = calendarUrl(e);
+  return `<li class="event" id="ev-${esc(e.id)}" style="${swatch(dayColor)};border-image-source:${frameUrl(dayColor)}">
+    ${e.id === nextId ? `<p class="next">next up</p>` : ""}
+    <p class="time caps">${time}</p>
+    <h3>${e.emoji ? `<span class="emo" aria-hidden="true">${esc(e.emoji)}</span>` : ""}${esc(e.title)}</h3>
+    ${where}
+    ${e.dress ? `<p class="dress">Dress code: ${esc(e.dress)}</p>` : ""}
+    ${e.notes ? `<p class="notes">${esc(e.notes)}</p>` : ""}
+    <p class="who">${who}</p>
+    ${cal ? `<a class="cal caps" href="${esc(cal)}" target="_blank" rel="noopener">Add to calendar</a>` : ""}
+  </li>`;
+}
+
+function renderDays(list){
+  const main = $("#days");
+  if (state.loading) { main.innerHTML = `<div class="loading">One moment…</div>`; return; }
+  if (state.error) { main.innerHTML = `<div class="empty error">${esc(state.error)}</div>`; return; }
+  if (!list.length) {
+    main.innerHTML = `<div class="empty">${state.selected ? `Nothing on ${esc(possessive(state.selected))} calendar yet.` : "Nothing on the calendar yet."}</div>`;
+    return;
+  }
+  const allDates = [...new Set(state.events.map(e => e.date).filter(Boolean))].sort();
+  const now = nowInZone();
+  let nextId = "";
+  if (allDates.length && now.date >= allDates[0]) {
+    const next = list.find(e => e.date && (e.date > now.date || (e.date === now.date && (e.endMin ?? e.startMin ?? 1439) >= now.min)));
+    nextId = next ? next.id : "";
+  }
+
+  const groups = new Map();
+  list.forEach(e => { const k = e.date || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e); });
+
+  main.innerHTML = [...groups].map(([date, evs]) => {
+    const idx = !date ? DAY_COLORS.length - 1
+      : CONFIG.firstDay ? Math.max(0, Math.round((utcDate(date) - utcDate(CONFIG.firstDay)) / 864e5))
+      : Math.max(0, allDates.indexOf(date));
+    const color = DAY_COLORS[idx % DAY_COLORS.length];
+    const orn = DAY_ORNAMENTS[idx % DAY_ORNAMENTS.length];
+    let name = "Date to come", sub = "";
+    if (date) {
+      const d = utcDate(date);
+      name = d.toLocaleDateString("en-GB", {weekday:"long", timeZone:"UTC"});
+      sub = d.toLocaleDateString("en-GB", {day:"numeric", month:"long", timeZone:"UTC"});
+    }
+    return `<section class="day" style="${swatch(color)}" aria-label="${esc(date ? `${name} ${sub}` : name)}">
+      <header class="day-head">
+        <svg class="day-orn" aria-hidden="true"><use href="#${orn}" width="100%" height="100%"/></svg>
+        <div><div class="day-name">${esc(name)}</div>${sub ? `<div class="day-date caps">${esc(sub)}</div>` : ""}</div>
+      </header>
+      <ol class="events">${evs.map(e => eventHtml(e, nextId, color)).join("")}</ol>
+    </section>`;
+  }).join("");
+}
+
+function render(){
+  $("#banner").hidden = state.live;
+  renderMasthead();
+  renderChips();
+  const list = visibleEvents();
+  renderSummary(list);
+  renderDays(list);
+  $("#updated").textContent = state.updatedAt
+    ? `Updated ${state.updatedAt.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}` : "";
+}
+
+/* ── interactions ── */
+let toastTimer;
+function toast(msg, ms = 3200){
+  const t = $("#toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), ms);
+}
+
+function readHash(){
+  const m = location.hash.match(/for=([^&]*)/);
+  state.selected = m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
+}
+function select(person){
+  state.selected = person;
+  try { history.replaceState(null, "", person ? `#for=${encodeURIComponent(person)}` : location.pathname + location.search); } catch (_) {}
+  render();
+}
+
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip");
+  if (b) select(b.dataset.person);
+});
+window.addEventListener("hashchange", () => { readHash(); render(); });
+
+$("#copyLink").addEventListener("click", async () => {
+  const base = location.href.split("#")[0];
+  const url = state.selected ? `${base}#for=${encodeURIComponent(state.selected)}` : base;
+  try {
+    await navigator.clipboard.writeText(url);
+    toast(state.selected ? `Copied. Send it to ${state.selected} and it opens to their schedule.` : "Link copied.");
+  } catch (_) {
+    toast(url, 8000);
+  }
+});
+
+/* Add-event dialog */
+const dialog = $("#addDialog"), form = $("#addForm");
+
+function buildPicks(){
+  const pre = state.selected ? [state.selected] : ["Everyone"];
+  const opts = ["Everyone", ...allPeople()];
+  $("#picks").innerHTML = opts.map(p => {
+    const style = isEveryone(p) ? "" : ` style="${swatch(colorFor(p))}"`;
+    return `<label class="pick"${style}><input type="checkbox" name="who" value="${esc(p)}"${pre.some(x => same(x, p)) ? " checked" : ""}><span>${esc(p)}</span></label>`;
+  }).join("");
+}
+$("#picks").addEventListener("change", e => {
+  const box = e.target; if (!box.matches("input")) return;
+  const boxes = [...form.querySelectorAll('input[name="who"]')];
+  if (isEveryone(box.value) && box.checked) boxes.forEach(b => { if (b !== box) b.checked = false; });
+  if (!isEveryone(box.value) && box.checked) boxes.forEach(b => { if (isEveryone(b.value)) b.checked = false; });
+});
+
+function openAdd(){
+  form.reset();
+  buildPicks();
+  const dates = sortEvents(state.events).map(e => e.date).filter(Boolean);
+  const today = nowInZone().date;
+  form.elements.date.value = dates.find(d => d >= today) || dates[0] || today;
+  form.elements.addedBy.value = store.get("itinerary-name");
+  form.elements.passcode.value = store.get("itinerary-passcode");
+  $("#passField").hidden = !state.live;
+  $("#formError").hidden = true;
+  if (typeof dialog.showModal === "function") dialog.showModal(); else dialog.setAttribute("open", "");
+  setTimeout(() => form.elements.title.focus(), 30);
+}
+function closeAdd(){ if (dialog.open) { if (dialog.close) dialog.close(); else dialog.removeAttribute("open"); } }
+
+document.querySelectorAll("[data-open-add]").forEach(b => b.addEventListener("click", openAdd));
+$("#closeAdd").addEventListener("click", closeAdd);
+$("#cancelAdd").addEventListener("click", closeAdd);
+dialog.addEventListener("click", e => { if (e.target === dialog) closeAdd(); });
+
+function formError(msg){ const el = $("#formError"); el.textContent = msg; el.hidden = false; }
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const title = String(fd.get("title") || "").trim();
+  const date = String(fd.get("date") || "");
+  if (!title) return formError("Give the event a name.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return formError("Choose a date.");
+  const checked = fd.getAll("who");
+  const extras = String(fd.get("others") || "").trim() ? splitPeople(fd.get("others")) : [];
+  let people = [...checked.filter(p => !isEveryone(p)), ...extras.filter(p => !isEveryone(p))];
+  if (!people.length) people = ["Everyone"];
+
+  const ev = {
+    title, date,
+    start: String(fd.get("start") || ""), end: String(fd.get("end") || ""),
+    location: String(fd.get("location") || "").trim(), address: String(fd.get("address") || "").trim(),
+    dress: String(fd.get("dress") || "").trim(), notes: String(fd.get("notes") || "").trim(),
+    people: people.join(", "), addedBy: String(fd.get("addedBy") || "").trim()
+  };
+  const passcode = String(fd.get("passcode") || "").trim();
+  if (state.live && !passcode) return formError("Enter the family passcode.");
+
+  const btn = $("#submitAdd");
+  btn.disabled = true; btn.textContent = "Adding…";
+  try {
+    const id = await saveEvent(ev, passcode);
+    store.set("itinerary-name", ev.addedBy);
+    if (state.live) store.set("itinerary-passcode", passcode);
+    closeAdd();
+    render();
+    const visible = !state.selected || people.some(p => isEveryone(p) || same(p, state.selected));
+    toast(visible ? `Added “${title}”` : `Added “${title}” for ${listJoin(people)}. Tap Full schedule to see it.`);
+    const row = document.getElementById(`ev-${id}`);
+    if (row) { row.scrollIntoView({behavior: "smooth", block: "center"}); row.classList.add("flash"); }
+  } catch (err) {
+    formError(/passcode/i.test(err.message) ? "That passcode didn’t match. Check with whoever shared the link." : "Something went wrong saving that. Please try again.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Add to itinerary";
+  }
+});
+
+/* ── start ── */
+document.querySelectorAll("[data-frame]").forEach(el => { el.style.borderImageSource = frameUrl(el.dataset.frame); });
+readHash();
+render();
+load();
+if (state.live) {
+  setInterval(() => { if (!document.hidden && !dialog.open) load(); }, Math.max(20, CONFIG.refreshSeconds) * 1000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !dialog.open) load(); });
+}
+</script>
+</body>
+</html>
