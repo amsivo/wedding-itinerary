@@ -348,6 +348,34 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
     </g>
   </symbol>
 
+  <symbol id="m-bells" viewBox="16 0 88 100">
+    <g filter="url(#paint)">
+      <path d="M60 16 L43 30 M60 16 L77 30" stroke="#8E2A1D" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <g transform="translate(43 30) rotate(-22)">
+        <ellipse cx="0" cy="40" rx="17" ry="5" fill="#C9962B"/>
+        <path d="M0 0 C-10 0 -13 20 -17 34 Q-17 40 0 41 Q17 40 17 34 C13 20 10 0 0 0 Z" fill="#E1B54A"/>
+        <path d="M-7 8 C-9 16 -10 24 -10 30" stroke="#F3D48A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="0" cy="45" r="3.5" fill="#8E2A1D"/>
+        <circle cx="0" cy="-1" r="3.5" fill="#C9962B"/>
+      </g>
+      <g transform="translate(77 30) rotate(22)">
+        <ellipse cx="0" cy="40" rx="17" ry="5" fill="#C9962B"/>
+        <path d="M0 0 C-10 0 -13 20 -17 34 Q-17 40 0 41 Q17 40 17 34 C13 20 10 0 0 0 Z" fill="#E1B54A"/>
+        <path d="M-7 8 C-9 16 -10 24 -10 30" stroke="#F3D48A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="0" cy="45" r="3.5" fill="#8E2A1D"/>
+        <circle cx="0" cy="-1" r="3.5" fill="#C9962B"/>
+      </g>
+      <path d="M57 15 L48 31" stroke="#D9536B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M63 15 L72 31" stroke="#D9536B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M60 12 C50 0 36 4 44 14 C36 24 50 24 60 12 Z" fill="#D9536B"/>
+      <path d="M60 12 C70 0 84 4 76 14 C84 24 70 24 60 12 Z" fill="#D9536B"/>
+      <circle cx="60" cy="13" r="4" fill="#B9385A"/>
+      <path d="M25 48 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 Z" fill="#F3D48A"/>
+      <path d="M95 42 l1.5 -5 l1.5 5 l5 1.5 l-5 1.5 l-1.5 5 l-1.5 -5 l-5 -1.5 Z" fill="#F3D48A"/>
+      <path d="M60 94 l1.5 -5 l1.5 5 l5 1.5 l-5 1.5 l-1.5 5 l-1.5 -5 l-5 -1.5 Z" fill="#F3D48A"/>
+    </g>
+  </symbol>
+
   <symbol id="m-scones" viewBox="0 0 110 100">
     <g filter="url(#paint)">
       <ellipse cx="55" cy="90" rx="24" ry="4" fill="#A99A86"/>
@@ -518,7 +546,7 @@ const possessive = n => /s$/i.test(n) ? `${n}’` : `${n}’s`;
 const listJoin = a => a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} & ${a[a.length - 1]}`;
 const PALETTE = ["#C8412F","#6E8237","#4F7FB5","#C99326","#C3607A","#2F5540","#C06A40","#7B4F7A"];
 const DAY_COLORS = ["#C8412F","#6E8237","#4F7FB5","#C06A40","#2F5540","#B9862A","#7B4F7A"];
-const DAY_ORNAMENTS = ["m-teacup","m-bus","m-brolly","m-scones","m-phonebox","m-crown","m-cab"];
+const DAY_ORNAMENTS = ["m-teacup","m-brolly","m-bus","m-scones","m-bells","m-crown","m-cab"];
 const MONTHS = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
 const store = {
   get(k){ try { return localStorage.getItem(k) || ""; } catch(_) { return ""; } },
