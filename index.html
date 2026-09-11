@@ -571,6 +571,13 @@ function parseTime(v){
   if (ap) { if (h > 12 || h === 0) return null; if (h === 12) h = 0; if (ap === "p") h += 12; }
   return (h % 24) * 60 + min;
 }
+// An end time typed without am/pm ("2") that lands before the start ("12:30 pm") means the same half-day later.
+function parseEnd(start, end){
+  const s = parseTime(start), t = parseTime(end);
+  if (s == null || t == null) return t;
+  const hasAp = /[ap]m?$/i.test(String(end ?? "").trim());
+  return (!hasAp && t < s && t + 720 < 1440) ? t + 720 : t;
+}
 function fmtTime(min){
   const h = Math.floor(min / 60) % 24, m = min % 60, ap = h >= 12 ? "pm" : "am", h12 = h % 12 || 12;
   return m ? `${h12}:${pad(m)} ${ap}` : `${h12} ${ap}`;
@@ -589,7 +596,7 @@ function normalizeEvent(e){
     id: String(e.id || `e${++uid}`),
     date: normDate(e.date),
     startMin: parseTime(e.start),
-    endMin: parseTime(e.end),
+    endMin: parseEnd(e.start, e.end),
     title: String(e.title ?? "").trim() || "Untitled",
     location: String(e.location ?? "").trim(),
     address: String(e.address ?? "").trim(),
@@ -623,7 +630,7 @@ function colorFor(name){
 function sortEvents(list){
   return list.slice().sort((a, b) =>
     (a.date || "9999").localeCompare(b.date || "9999") ||
-    (a.startMin ?? -1) - (b.startMin ?? -1) ||
+    (a.startMin ?? a.endMin ?? -1) - (b.startMin ?? b.endMin ?? -1) ||
     a.title.localeCompare(b.title));
 }
 function visibleEvents(){
@@ -729,13 +736,14 @@ function calendarUrl(e){
   if (!e.date) return "";
   const d = e.date.replace(/-/g, "");
   let dates;
-  if (e.startMin == null) {
+  const start = e.startMin ?? e.endMin;
+  if (start == null) {
     dates = `${d}/${addDays(e.date, 1).replace(/-/g, "")}`;
   } else {
-    const end = e.endMin ?? Math.min(e.startMin + 60, 1439);
-    const endDate = end <= e.startMin ? addDays(e.date, 1) : e.date;
+    const end = (e.startMin != null && e.endMin != null) ? e.endMin : Math.min(start + 60, 1439);
+    const endDate = end <= start ? addDays(e.date, 1) : e.date;
     const hm = m => `${pad(Math.floor(m / 60))}${pad(m % 60)}00`;
-    dates = `${d}T${hm(e.startMin)}/${endDate.replace(/-/g, "")}T${hm(end)}`;
+    dates = `${d}T${hm(start)}/${endDate.replace(/-/g, "")}T${hm(end)}`;
   }
   const details = [e.notes, e.dress && `Dress: ${e.dress}`].filter(Boolean).join("\n");
   const q = new URLSearchParams({action: "TEMPLATE", text: e.title, dates, ctz: CONFIG.timezone, details, location: e.address || e.location});
@@ -743,8 +751,9 @@ function calendarUrl(e){
 }
 
 function eventHtml(e, nextId, dayColor){
-  const time = e.startMin == null ? "All day"
-    : `${fmtTime(e.startMin)}${e.endMin != null && e.endMin !== e.startMin ? ` – ${fmtTime(e.endMin)}` : ""}`;
+  const time = e.startMin != null && e.endMin != null && e.endMin !== e.startMin
+    ? `${fmtTime(e.startMin)} – ${fmtTime(e.endMin)}`
+    : (e.startMin ?? e.endMin) != null ? fmtTime(e.startMin ?? e.endMin) : "";
   const where = (e.location || e.address) ? `<p class="place"><a href="${mapsUrl(e)}" target="_blank" rel="noopener">${esc(e.location || e.address)}</a></p>` : "";
   const who = e.people.some(isEveryone)
     ? `For everyone`
@@ -752,7 +761,7 @@ function eventHtml(e, nextId, dayColor){
   const cal = calendarUrl(e);
   return `<li class="event" id="ev-${esc(e.id)}" style="${swatch(dayColor)};border-image-source:${frameUrl(dayColor)}">
     ${e.id === nextId ? `<p class="next">next up</p>` : ""}
-    <p class="time caps">${time}</p>
+    ${time ? `<p class="time caps">${time}</p>` : ""}
     <h3>${e.emoji ? `<span class="emo" aria-hidden="true">${esc(e.emoji)}</span>` : ""}${esc(e.title)}</h3>
     ${where}
     ${e.dress ? `<p class="dress">Dress code: ${esc(e.dress)}</p>` : ""}
