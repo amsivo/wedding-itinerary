@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F4ECDA'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='40' text-anchor='middle' fill='%23C8412F'%3E%26%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&display=swap" rel="stylesheet">
 
 <script>
 /* ──────────────────────────────────────────────────────────────
@@ -33,10 +33,10 @@ const CONFIG = {
 <style>
 :root{
   --table:#22382C; --paper:#F4ECDA; --card:#FAF5EA;
-  --ink:#2B2622; --ink-soft:#675E54; --ink-faint:#9A8F80;
+  --ink:#2B2622; --ink-soft:#4F473F; --ink-faint:#9A8F80;
   --tomato:#C8412F; --tomato-deep:#A5321F; --olive:#6E8237; --mustard:#D9A33A; --sky:#6C98C6;
   --script:"Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
-  --display:"Cormorant Garamond", Cormorant, Garamond, "Times New Roman", serif;
+  --display:"EB Garamond", Garamond, Georgia, "Times New Roman", serif;
   --serif:"EB Garamond", Garamond, Georgia, "Times New Roman", serif;
   --wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6 Q6 1.5 12 6 T24 6' fill='none' stroke='%23C8412F' stroke-width='1.4'/%3E%3C/svg%3E");
 }
@@ -86,7 +86,7 @@ button{font:inherit;color:inherit}
 h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp(3.4rem, 9vw, 5.4rem);line-height:1.05;margin:.35em 0 .3em;letter-spacing:0}
 .dateline{margin:0;color:var(--ink)}
 .dateline .dot{color:var(--tomato);padding:0 .7em}
-.countdown{font-family:var(--display);font-style:italic;font-size:1.3rem;color:var(--olive);margin:.7rem 0 0}
+.countdown{font-family:var(--display);font-style:italic;font-size:1.2rem;color:var(--olive);margin:.7rem 0 0}
 
 /* Person picker */
 .viewer{text-align:center;padding:2.2rem 0 .5rem}
@@ -94,7 +94,7 @@ h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;max-width:720px;margin:0 auto}
 .chip{
   display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;
-  font-family:var(--display);font-style:italic;font-size:1.25rem;font-weight:500;line-height:1;
+  font-family:var(--display);font-style:italic;font-size:1.15rem;font-weight:500;line-height:1;
   padding:.5rem 1.05rem .58rem;border:1px solid rgba(43,38,34,.3);border-radius:999px;background:transparent;color:var(--ink);
   transition:background .2s, color .2s, border-color .2s;
 }
@@ -108,7 +108,18 @@ h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp
 .viewer .linkbtn{margin-top:1rem}
 
 .summary-row{text-align:center;padding:1.4rem 0 .6rem}
-.summary{margin:0 0 1rem;font-family:var(--display);font-style:italic;font-size:1.4rem;color:var(--ink-soft)}
+.jump{display:inline-flex;align-items:center;gap:.6rem;margin:0 0 1.1rem}
+.jump .caps{color:var(--tomato)}
+.jump select{
+  appearance:none;-webkit-appearance:none;cursor:pointer;
+  font-family:var(--display);font-style:italic;font-size:1.15rem;font-weight:500;color:var(--ink);
+  background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23C8412F' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 1rem center;
+  border:1px solid rgba(43,38,34,.3);border-radius:999px;padding:.5rem 2.4rem .58rem 1.1rem;
+  transition:border-color .2s;
+}
+.jump select:hover,.jump select:focus-visible{border-color:var(--tomato);outline:none}
+.day{scroll-margin-top:1rem}
+.summary{margin:0 0 1rem;font-family:var(--display);font-style:italic;font-size:1.3rem;color:var(--ink-soft)}
 .summary em{color:var(--d, var(--ink));font-weight:500}
 .btn{
   font-family:var(--serif);font-size:.76rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
@@ -137,7 +148,7 @@ h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp
 .time{color:var(--d);margin:0}
 .event h3{font-family:var(--serif);font-weight:500;font-size:1.3rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.25;margin:.35rem 0 .1rem}
 .event h3 .emo{letter-spacing:0;margin-right:.35em}
-.place{font-family:var(--display);font-style:italic;font-size:1.25rem;margin:0}
+.place{font-family:var(--display);font-style:italic;font-size:1.2rem;margin:0}
 .place a{text-decoration:none;border-bottom:1px solid rgba(43,38,34,.25)}
 .place a:hover{border-color:var(--ink)}
 .dress{font-family:var(--display);font-style:italic;font-size:1.1rem;color:var(--ink-soft);margin:.1rem 0 0}
@@ -402,6 +413,10 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
 
     <div class="summary-row">
       <p class="summary" id="summary" aria-live="polite"></p>
+      <label class="jump" id="jumpWrap" hidden>
+        <span class="caps">Jump to</span>
+        <select id="jump" aria-label="Jump to a day"><option value="">a day…</option></select>
+      </label>
       <button class="btn" type="button" data-open-add>Add an event</button>
     </div>
 
@@ -775,6 +790,7 @@ function renderDays(list){
   const main = $("#days");
   if (state.loading) { main.innerHTML = `<div class="loading">One moment…</div>`; return; }
   if (state.error) { main.innerHTML = `<div class="empty error">${esc(state.error)}</div>`; return; }
+  $("#jumpWrap").hidden = true;
   if (!list.length) {
     main.innerHTML = `<div class="empty">${state.selected ? `Nothing on ${esc(possessive(state.selected))} calendar yet.` : "Nothing on the calendar yet."}</div>`;
     return;
@@ -790,6 +806,7 @@ function renderDays(list){
   const groups = new Map();
   list.forEach(e => { const k = e.date || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e); });
 
+  const jumpOpts = [];
   main.innerHTML = [...groups].map(([date, evs]) => {
     const idx = !date ? DAY_COLORS.length - 1
       : CONFIG.firstDay ? Math.max(0, Math.round((utcDate(date) - utcDate(CONFIG.firstDay)) / 864e5))
@@ -802,7 +819,9 @@ function renderDays(list){
       name = d.toLocaleDateString("en-GB", {weekday:"long", timeZone:"UTC"});
       sub = d.toLocaleDateString("en-GB", {day:"numeric", month:"long", timeZone:"UTC"});
     }
-    return `<section class="day" style="${swatch(color)}" aria-label="${esc(date ? `${name} ${sub}` : name)}">
+    const dayId = `day-${date || "tbc"}`;
+    jumpOpts.push(`<option value="${dayId}">${esc(date ? `${name} ${sub}` : name)}</option>`);
+    return `<section class="day" id="${dayId}" style="${swatch(color)}" aria-label="${esc(date ? `${name} ${sub}` : name)}">
       <header class="day-head">
         <svg class="day-orn" aria-hidden="true"><use href="#${orn}" width="100%" height="100%"/></svg>
         <div><div class="day-name">${esc(name)}</div>${sub ? `<div class="day-date caps">${esc(sub)}</div>` : ""}</div>
@@ -810,6 +829,8 @@ function renderDays(list){
       <ol class="events">${evs.map(e => eventHtml(e, nextId, color)).join("")}</ol>
     </section>`;
   }).join("");
+  $("#jump").innerHTML = `<option value="">a day…</option>${jumpOpts.join("")}`;
+  $("#jumpWrap").hidden = jumpOpts.length < 2;
 }
 
 function render(){
@@ -846,6 +867,12 @@ $("#chips").addEventListener("click", e => {
   if (b) select(b.dataset.person);
 });
 window.addEventListener("hashchange", () => { readHash(); render(); });
+
+$("#jump").addEventListener("change", e => {
+  const el = document.getElementById(e.target.value);
+  if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
+  e.target.value = "";
+});
 
 $("#copyLink").addEventListener("click", async () => {
   const base = location.href.split("#")[0];
