@@ -119,8 +119,6 @@ h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp
 }
 .jump select:hover,.jump select:focus-visible{border-color:var(--tomato);outline:none}
 .day{scroll-margin-top:1rem}
-.summary{margin:0 0 1rem;font-family:var(--display);font-style:italic;font-size:1.3rem;color:var(--ink-soft)}
-.summary em{color:var(--d, var(--ink));font-weight:500}
 .btn{
   font-family:var(--serif);font-size:.76rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
   background:var(--tomato);color:var(--paper);border:0;border-radius:999px;padding:.95rem 1.6rem;cursor:pointer;
@@ -223,7 +221,6 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
   .day-name{font-size:2.9rem}
   .event{padding:.4rem .5rem .5rem;border-width:16px;border-image-width:16px}
   .event h3{font-size:1.12rem;letter-spacing:.12em}
-  .summary{font-size:1.25rem}
   .summary-row .btn{display:none}
   .fab{display:flex;align-items:center;gap:.5rem;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20}
   .sheet{margin:6px;padding:.3rem .5rem 1rem;border-width:16px;border-image-width:16px}
@@ -412,7 +409,6 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
     </nav>
 
     <div class="summary-row">
-      <p class="summary" id="summary" aria-live="polite"></p>
       <label class="jump" id="jumpWrap" hidden>
         <span class="caps">Jump to</span>
         <select id="jump" aria-label="Jump to a day"><option value="">a day…</option></select>
@@ -734,17 +730,6 @@ function renderChips(){
   $("#copyLink").textContent = state.selected ? `Copy ${possessive(state.selected)} link` : "Copy link";
 }
 
-function renderSummary(list){
-  const el = $("#summary");
-  if (state.loading) { el.textContent = "Gathering the schedule…"; return; }
-  if (state.error) { el.textContent = ""; return; }
-  const days = new Set(list.map(e => e.date || "tbc")).size;
-  const counts = `${plural(list.length, "event")} across ${plural(days, "day")}`;
-  el.innerHTML = state.selected
-    ? `<em style="${swatch(colorFor(state.selected))}">${esc(possessive(state.selected))}</em> weekend: ${counts}`
-    : `The full schedule: ${counts}`;
-}
-
 function mapsUrl(e){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address || e.location)}`; }
 
 function calendarUrl(e){
@@ -838,7 +823,6 @@ function render(){
   renderMasthead();
   renderChips();
   const list = visibleEvents();
-  renderSummary(list);
   renderDays(list);
   $("#updated").textContent = state.updatedAt
     ? `Updated ${state.updatedAt.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}` : "";
