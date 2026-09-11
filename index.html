@@ -416,8 +416,8 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
 
     <div class="summary-row">
       <label class="jump" id="jumpWrap" hidden>
-        <span class="caps">Jump to</span>
-        <select id="jump" aria-label="Jump to a day"><option value="">a day…</option></select>
+        <span class="caps">Show</span>
+        <select id="jump" aria-label="Choose a day to show"><option value="">All days</option></select>
       </label>
       <button class="btn" type="button" data-open-add>Add an event</button>
     </div>
@@ -631,7 +631,7 @@ function nowInZone(){
 }
 
 /* ── state ── */
-const state = { live: !!CONFIG.apiUrl, loading: true, error: "", people: [], events: [], selected: "", updatedAt: null };
+const state = { live: !!CONFIG.apiUrl, loading: true, error: "", people: [], events: [], selected: "", day: "", updatedAt: null };
 
 function allPeople(){
   const out = [];
@@ -796,9 +796,29 @@ function renderDays(list){
 
   const groups = new Map();
   list.forEach(e => { const k = e.date || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e); });
+  // Days for the dropdown come from the full schedule so the list never shrinks when a person is chosen.
+  const allGroups = new Map();
+  sortEvents(state.events).forEach(e => { const k = e.date || ""; if (!allGroups.has(k)) allGroups.set(k, []); });
 
   const jumpOpts = [];
-  main.innerHTML = [...groups].map(([date, evs]) => {
+  const dayLabel = date => {
+    if (!date) return "Date to come";
+    const d = utcDate(date);
+    return `${d.toLocaleDateString("en-GB", {weekday:"long", timeZone:"UTC"})} ${d.toLocaleDateString("en-GB", {day:"numeric", month:"long", timeZone:"UTC"})}`;
+  };
+  allGroups.forEach((_, date) => jumpOpts.push(`<option value="${date || "tbc"}">${esc(dayLabel(date))}</option>`));
+  $("#jump").innerHTML = `<option value="">All days</option>${jumpOpts.join("")}`;
+  $("#jumpWrap").hidden = jumpOpts.length < 2;
+  if (state.day && !groups.has(state.day === "tbc" ? "" : state.day)) {
+    // The chosen day exists for someone else but not for this person: say so rather than silently showing everything.
+    const label = dayLabel(state.day === "tbc" ? "" : state.day);
+    $("#jump").value = state.day;
+    main.innerHTML = `<div class="empty">${state.selected ? `Nothing for ${esc(state.selected)} on ${esc(label)}.` : `Nothing on ${esc(label)} yet.`}</div>`;
+    return;
+  }
+  $("#jump").value = state.day;
+  const shown = state.day ? [...groups].filter(([date]) => (date || "tbc") === state.day) : [...groups];
+  main.innerHTML = shown.map(([date, evs]) => {
     const idx = !date ? DAY_COLORS.length - 1
       : CONFIG.firstDay ? Math.max(0, Math.round((utcDate(date) - utcDate(CONFIG.firstDay)) / 864e5))
       : Math.max(0, allDates.indexOf(date));
@@ -811,7 +831,6 @@ function renderDays(list){
       sub = d.toLocaleDateString("en-GB", {day:"numeric", month:"long", timeZone:"UTC"});
     }
     const dayId = `day-${date || "tbc"}`;
-    jumpOpts.push(`<option value="${dayId}">${esc(date ? `${name} ${sub}` : name)}</option>`);
     return `<section class="day" id="${dayId}" style="${swatch(color)}" aria-label="${esc(date ? `${name} ${sub}` : name)}">
       <header class="day-head">
         <svg class="day-orn" aria-hidden="true"><use href="#${orn}" width="100%" height="100%"/></svg>
@@ -820,8 +839,6 @@ function renderDays(list){
       <ol class="events">${evs.map(e => eventHtml(e, nextId, color)).join("")}</ol>
     </section>`;
   }).join("");
-  $("#jump").innerHTML = `<option value="">a day…</option>${jumpOpts.join("")}`;
-  $("#jumpWrap").hidden = jumpOpts.length < 2;
 }
 
 function render(){
@@ -859,9 +876,8 @@ $("#chips").addEventListener("click", e => {
 window.addEventListener("hashchange", () => { readHash(); render(); });
 
 $("#jump").addEventListener("change", e => {
-  const el = document.getElementById(e.target.value);
-  if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
-  e.target.value = "";
+  state.day = e.target.value;
+  render();
 });
 
 $("#copyLink").addEventListener("click", async () => {
