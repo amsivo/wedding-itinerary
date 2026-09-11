@@ -82,9 +82,9 @@ button{font:inherit;color:inherit}
 
 /* Hero */
 .hero{position:relative;text-align:center;padding:3rem 1rem 2.6rem}
-.kicker{color:var(--tomato);margin:0}
+.kicker{color:var(--tomato);margin:0;font-size:1.05rem}
 h1{font-family:var(--script);font-weight:400;color:var(--tomato);font-size:clamp(3.4rem, 9vw, 5.4rem);line-height:1.05;margin:.35em 0 .3em;letter-spacing:0}
-.dateline{margin:0;color:var(--ink)}
+.dateline{margin:0;color:var(--ink);font-size:1.2rem;font-weight:500}
 .dateline .dot{color:var(--tomato);padding:0 .7em}
 .countdown{font-family:var(--display);font-style:italic;font-size:1.2rem;color:var(--olive);margin:.7rem 0 0}
 
@@ -213,6 +213,12 @@ legend{padding:0;color:var(--ink-soft);margin-bottom:.5rem}
   .day:nth-child(even) .day-head{flex-direction:row;text-align:left}
 }
 @media (max-width:560px){
+  .kicker{font-size:.95rem}
+  .dateline{font-size:1.02rem;letter-spacing:.18em;line-height:1.7}
+  .dateline .seg{display:block}
+  .dateline .dot{display:none}
+  .jump{display:flex;justify-content:center}
+  .jump .caps{white-space:nowrap}
   body{font-size:17px;padding:16px 16px 6rem}
   .frame{margin:8px;padding:0 6px 6px;border-width:16px;border-image-width:16px}
   .hero{padding:5.2rem .25rem 2rem}
@@ -703,7 +709,7 @@ function renderMasthead(){
          : month(a) === month(b) ? `${a.getUTCDate()}–${b.getUTCDate()} ${month(b)} ${yB}`
          : `${a.getUTCDate()} ${month(a)} – ${b.getUTCDate()} ${month(b)} ${yB}`;
   }
-  $("#dateline").innerHTML = [CONFIG.place, line].filter(Boolean).map(esc).join('<span class="dot">✦</span>');
+  $("#dateline").innerHTML = [CONFIG.place, line].filter(Boolean).map(x => `<span class="seg">${esc(x)}</span>`).join('<span class="dot">✦</span>');
 
   let count = "";
   if (dates.length) {
